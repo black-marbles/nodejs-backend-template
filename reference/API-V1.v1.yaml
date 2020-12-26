@@ -323,6 +323,9 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
+      tags:
+        - shop
+        - seller
   '/shop/{shopId}':
     parameters:
       - in: path
