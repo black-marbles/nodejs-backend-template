@@ -1,0 +1,501 @@
+openapi: 3.0.0
+info:
+  title: API v1
+  version: '1.0'
+  contact:
+    name: Black Marbles Tech
+    url: blackmarbles.tech
+    email: blackmarble66@gmail.com
+  termsOfService: blackmarbles.tech
+  description: This is v1 of the api for the project RegioHeld.at
+servers:
+  - url: 'http://localhost:3000/api/v1'
+    description: local-server
+paths:
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: integer
+        name: userId
+        in: path
+        required: true
+        description: Id of an existing user.
+    get:
+      summary: Get User Info by User ID
+      tags:
+        - user
+        - auth
+      responses:
+        '200':
+          description: User Found
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: number
+                  firebase_id:
+                    type: string
+                    minLength: 1
+                  emailVerified:
+                    type: boolean
+                  createDate:
+                    type: string
+                    minLength: 1
+                  shop:
+                    type: number
+                required:
+                  - id
+                  - firebase_id
+                  - emailVerified
+                  - createDate
+                  - shop
+              examples:
+                Get User Alice Smith:
+                  value:
+                    id: 142
+                    firebase_id: 4c1ui23y4931287uygfhi
+                    emailVerified: true
+                    createDate: '2019-08-24'
+                    shop: 2313
+        '404':
+          description: User Not Found
+      operationId: get-users-userId
+      description: Retrieve the information of the user with the matching user ID.
+      parameters: []
+      security:
+        - firebase_token: []
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                example-1:
+                  value:
+                    id: 0
+                    emailVerified: true
+                    createDate: '2019-08-24'
+                    firbase_uid: string
+                    shop:
+                      id: string
+          headers: {}
+        '400':
+          description: Missing Required Information
+        '409':
+          description: UID Already Taken
+      description: Create a new user.
+      parameters: []
+      security:
+        - firebase_token: []
+      tags:
+        - user
+        - auth
+        - create
+  /shop:
+    post:
+      summary: Create New Shop
+      operationId: post-shop
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      tags:
+        - shop
+        - seller
+        - create
+      security:
+        - firebase_token: []
+      description: Route to create a new shop for the current user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                location:
+                  type: string
+                  minLength: 1
+                about:
+                  type: string
+                  minLength: 1
+                contact:
+                  type: object
+                  minProperties: 1
+                  properties:
+                    email:
+                      type: string
+                      minLength: 1
+                    phone:
+                      type: string
+                      minLength: 1
+                timing:
+                  type: object
+                  required:
+                    - start
+                    - end
+                  properties:
+                    start:
+                      type: string
+                      minLength: 1
+                    end:
+                      type: string
+                      minLength: 1
+                days:
+                  type: array
+                  minItems: 7
+                  maxItems: 7
+                  items:
+                    type: boolean
+                facilities:
+                  type: object
+                  required:
+                    - free_wifi
+                    - online_payments
+                    - ac
+                    - free_parking
+                  properties:
+                    free_wifi:
+                      type: boolean
+                    online_payments:
+                      type: boolean
+                    ac:
+                      type: boolean
+                    free_parking:
+                      type: boolean
+              required:
+                - name
+                - location
+                - about
+                - contact
+                - timing
+                - days
+                - facilities
+            examples:
+              example-1:
+                value:
+                  name: string
+                  location: string
+                  about: string
+                  contact:
+                    email: string
+                    phone: string
+                  timing:
+                    start: string
+                    end: string
+                  days:
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                  facilities:
+                    free_wifi: true
+                    online_payments: true
+                    ac: true
+                    free_parking: true
+        description: 'Send all the info collected from the user to setup a shop. '
+    put:
+      summary: Update Current Users Shop
+      operationId: patch-shop
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                location:
+                  type: string
+                  minLength: 1
+                about:
+                  type: string
+                  minLength: 1
+                contact:
+                  type: object
+                  minProperties: 1
+                  properties:
+                    email:
+                      type: string
+                      minLength: 1
+                    phone:
+                      type: string
+                      minLength: 1
+                timing:
+                  type: object
+                  required:
+                    - start
+                    - end
+                  properties:
+                    start:
+                      type: string
+                      minLength: 1
+                    end:
+                      type: string
+                      minLength: 1
+                days:
+                  type: array
+                  items:
+                    type: boolean
+                facilities:
+                  type: object
+                  required:
+                    - free_wifi
+                    - online_payments
+                    - ac
+                    - free_parking
+                  properties:
+                    free_wifi:
+                      type: boolean
+                    online_payments:
+                      type: boolean
+                    ac:
+                      type: boolean
+                    free_parking:
+                      type: boolean
+              required:
+                - name
+                - location
+                - about
+                - contact
+                - timing
+                - days
+                - facilities
+        description: 'All the fields are required, send the final object after it''s changed!'
+      security:
+        - firebase_token: []
+      description: Make edits to the already created shops
+      tags:
+        - shop
+        - seller
+  '/shop/{shopId}':
+    parameters:
+      - $ref: '#/components/parameters/Shop-ID'
+    get:
+      summary: Get Shop By ID
+      tags:
+        - shop
+        - seller
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+      operationId: get-shop-shopId
+      description: Get a specific shop by id
+components:
+  schemas:
+    User:
+      title: User
+      type: object
+      description: ''
+      x-examples:
+        Alice Smith:
+          id: 142
+          firebase_id: 4c1ui23y4931287uygfhi
+          emailVerified: true
+          createDate: '2019-08-24'
+          shop: 2313
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the given user.
+        emailVerified:
+          type: boolean
+          description: Set to true if the user's email has been verified.
+        createDate:
+          type: string
+          format: date
+          description: The date that the user was created.
+        firbase_uid:
+          type: string
+        shop:
+          $ref: '#/components/schemas/Shop'
+      required:
+        - id
+        - emailVerified
+      x-tags:
+        - user
+        - auth
+    Shop:
+      title: Shop
+      type: object
+      x-examples:
+        example-1:
+          id: string
+          seller: string
+          name: string
+          location: string
+          about: string
+          ratings:
+            - value: 0
+              user:
+                id: 0
+                emailVerified: true
+                createDate: '2019-08-24'
+                firbase_uid: string
+                shop:
+                  id: string
+                  seller: string
+                  name: string
+                  location: string
+                  about: string
+                  ratings:
+                    - value: 0
+                      user: {}
+                  contact:
+                    email: user@example.com
+                    phone: string
+                  timing:
+                    start: string
+                    end: string
+                  days:
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                    - true
+                  facilities:
+                    free_wifi: true
+                    online_payments: true
+                    ac: true
+                    free_parking: true
+          contact:
+            email: user@example.com
+            phone: string
+          timing:
+            start: string
+            end: string
+          days:
+            - true
+            - true
+            - true
+            - true
+            - true
+            - true
+            - true
+          facilities:
+            free_wifi: true
+            online_payments: true
+            ac: true
+            free_parking: true
+      description: This model represents shop of a user
+      properties:
+        id:
+          type: string
+        seller:
+          $ref: '#/components/schemas/User'
+        name:
+          type: string
+        location:
+          type: string
+        about:
+          type: string
+        ratings:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: integer
+                minimum: 0
+                maximum: 5
+                exclusiveMinimum: true
+                exclusiveMaximum: true
+              user:
+                $ref: '#/components/schemas/User'
+        contact:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+            phone:
+              type: string
+        timing:
+          type: object
+          properties:
+            start:
+              type: string
+              format: time
+            end:
+              type: string
+              format: time
+        days:
+          type: array
+          description: 'weather the shop is open (true) or closed (false) on a specific day (order: Sun, Mon .... Sat)'
+          minItems: 7
+          maxItems: 7
+          items:
+            type: boolean
+        facilities:
+          type: object
+          properties:
+            free_wifi:
+              type: boolean
+            online_payments:
+              type: boolean
+            ac:
+              type: boolean
+            free_parking:
+              type: boolean
+      x-tags:
+        - shop
+  securitySchemes:
+    firebase_token:
+      name: firebase_token
+      type: apiKey
+      in: header
+      description: Firebase Id Token
+  parameters:
+    Shop-ID:
+      name: Shop ID
+      in: path
+      required: true
+      schema:
+        type: string
+      description: ID of a shop object
+tags:
+  - name: user
+  - name: auth
+  - name: create
+  - name: shop
+  - name: 'seller '
+  - name: seller
