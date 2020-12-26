@@ -324,7 +324,11 @@ paths:
         - seller
   '/shop/{shopId}':
     parameters:
-      - $ref: '#/components/parameters/Shop-ID'
+      - in: path
+        name: shopId
+        description: Id of the shop
+        schema:
+          type: string
     get:
       summary: Get Shop By ID
       tags:
