@@ -340,7 +340,131 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Shop'
+                description: ''
+                type: object
+                properties:
+                  id:
+                    type: string
+                    minLength: 1
+                  seller:
+                    type: string
+                    description: id of the seller user
+                  name:
+                    type: string
+                    minLength: 1
+                  location:
+                    type: string
+                    minLength: 1
+                  about:
+                    type: string
+                    minLength: 1
+                  ratings:
+                    type: array
+                    uniqueItems: true
+                    minItems: 1
+                    items:
+                      type: object
+                      properties:
+                        value:
+                          type: number
+                        user:
+                          type: string
+                          description: id of the user
+                      required:
+                        - value
+                        - user
+                  contact:
+                    type: object
+                    minProperties: 1
+                    properties:
+                      email:
+                        type: string
+                        minLength: 1
+                      phone:
+                        type: string
+                        minLength: 1
+                  timing:
+                    type: object
+                    required:
+                      - start
+                      - end
+                    properties:
+                      start:
+                        type: string
+                        minLength: 1
+                      end:
+                        type: string
+                        minLength: 1
+                  days:
+                    type: array
+                    maxItems: 7
+                    minItems: 7
+                    items:
+                      type: boolean
+                  facilities:
+                    type: object
+                    required:
+                      - free_wifi
+                      - online_payments
+                      - ac
+                      - free_parking
+                    properties:
+                      free_wifi:
+                        type: boolean
+                      online_payments:
+                        type: boolean
+                      ac:
+                        type: boolean
+                      free_parking:
+                        type: boolean
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                required:
+                  - id
+                  - seller
+                  - name
+                  - location
+                  - about
+                  - ratings
+                  - contact
+                  - timing
+                  - days
+                  - facilities
+                  - tags
+              examples:
+                example-1:
+                  value:
+                    id: string
+                    seller: string
+                    name: string
+                    location: string
+                    about: string
+                    ratings:
+                      - value: 0
+                        user: string
+                    contact:
+                      email: string
+                      phone: string
+                    timing:
+                      start: string
+                      end: string
+                    days:
+                      - true
+                      - true
+                      - true
+                      - true
+                      - true
+                      - true
+                      - true
+                    facilities:
+                      free_wifi: true
+                      online_payments: true
+                      ac: true
+                      free_parking: true
+                    tags:
+                      - string
         '404':
           description: Not Found
         '500':
