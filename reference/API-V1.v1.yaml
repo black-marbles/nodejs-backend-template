@@ -283,7 +283,7 @@ paths:
         - shop
         - seller
     get:
-      summary: ''
+      summary: Get Shops
       operationId: get-shop
       responses:
         '200':
@@ -310,6 +310,19 @@ paths:
       tags:
         - shop
         - seller
+    delete:
+      summary: Delete your shop
+      operationId: delete-shop
+      security:
+        - firebase_token: []
+      description: Close Down Your Shop (IRREVERSIBLE)
+      responses:
+        '204':
+          description: No Content (Successfully Deleted)
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
   '/shop/{shopId}':
     parameters:
       - in: path
