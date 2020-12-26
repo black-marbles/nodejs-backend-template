@@ -160,8 +160,6 @@ paths:
                       minLength: 1
                 days:
                   type: array
-                  minItems: 7
-                  maxItems: 7
                   items:
                     type: boolean
                 facilities:
@@ -180,6 +178,11 @@ paths:
                       type: boolean
                     free_parking:
                       type: boolean
+                tags:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
               required:
                 - name
                 - location
@@ -188,31 +191,7 @@ paths:
                 - timing
                 - days
                 - facilities
-            examples:
-              example-1:
-                value:
-                  name: string
-                  location: string
-                  about: string
-                  contact:
-                    email: string
-                    phone: string
-                  timing:
-                    start: string
-                    end: string
-                  days:
-                    - true
-                    - true
-                    - true
-                    - true
-                    - true
-                    - true
-                    - true
-                  facilities:
-                    free_wifi: true
-                    online_payments: true
-                    ac: true
-                    free_parking: true
+                - tags
         description: 'Send all the info collected from the user to setup a shop. '
     put:
       summary: Update Current Users Shop
@@ -282,6 +261,11 @@ paths:
                       type: boolean
                     free_parking:
                       type: boolean
+                tags:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
               required:
                 - name
                 - location
@@ -290,10 +274,51 @@ paths:
                 - timing
                 - days
                 - facilities
+                - tags
         description: 'All the fields are required, send the final object after it''s changed!'
       security:
         - firebase_token: []
       description: Make edits to the already created shops
+      tags:
+        - shop
+        - seller
+    get:
+      summary: ''
+      operationId: get-shop
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    description: results of the query
+                    items:
+                      $ref: '#/components/schemas/Shop'
+                required:
+                  - results
+        '404':
+          description: Not Found
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: search
+          description: Search Query
+        - schema:
+            type: string
+          in: query
+          name: zone
+          description: The location zone that the user has chosen
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: Page number
+      description: 'API Endpoint to search for shops according to zone, search query and page number'
       tags:
         - shop
         - seller
@@ -417,6 +442,8 @@ components:
             ac: true
             free_parking: true
       description: This model represents shop of a user
+      x-tags:
+        - shop
       properties:
         id:
           type: string
@@ -476,8 +503,14 @@ components:
               type: boolean
             free_parking:
               type: boolean
-      x-tags:
-        - shop
+        tags:
+          type: array
+          minItems: 1
+          description: 'This dictates when your shop will show up in the search, please make sure to use the right ones.'
+          items:
+            type: string
+      required:
+        - tags
   securitySchemes:
     firebase_token:
       name: firebase_token
