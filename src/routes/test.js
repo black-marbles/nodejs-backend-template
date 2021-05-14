@@ -1,8 +1,9 @@
 const router = require("express").Router();
 const TestController = require("../Controller/TestController");
+const testController = new TestController();
 
-router.get("/", TestController.get);
-router.get("/sync-error", TestController.getSyncError);
-router.get("/async-error", TestController.getAsyncError);
+router.get("/", testController.get);
+router.get("/sync-error", testController.getSyncError);
+router.get("/async-error", testController.getAsyncError);
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 
-class TestControllerSingleton {
+class TestController {
   constructor() {}
   get = function (req, res) {
     res.status(200).json({ test: "successfull" });
@@ -18,8 +18,5 @@ class TestControllerSingleton {
     throw error;
   });
 }
-
-const TestController = new TestControllerSingleton();
-Object.freeze(TestController);
 
 module.exports = TestController;
