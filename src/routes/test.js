@@ -1,9 +1,20 @@
 const router = require("express").Router();
-const TestController = require("../Controller/TestController");
-const testController = new TestController();
+const TestService = require("../services/TestService");
+const asyncHandler = require("express-async-handler");
+const testService = new TestService();
 
-router.get("/", testController.get);
-router.get("/sync-error", testController.getSyncError);
-router.get("/async-error", testController.getAsyncError);
+router.get("/", (req, res) => {
+    const success = testService.generateSuccessfulResponse();
+    res.status(200).json(success);
+});
+router.get("/sync-error", (req, res) => {
+    throw testService.generateError();
+});
+router.get(
+    "/async-error",
+    asyncHandler(async (req, res) => {
+        throw testService.generateError();
+    })
+);
 
 module.exports = router;
